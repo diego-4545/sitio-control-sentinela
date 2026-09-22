@@ -1,0 +1,446 @@
+/* ============================================================
+   Tokens
+   ============================================================ */
+:root {
+  --bg: #12161c;
+  --bg-panel: #1a2029;
+  --bg-panel-alt: #161b22;
+  --line: #2a3341;
+  --line-soft: rgba(255,255,255,0.06);
+
+  --text-primary: #eef1f5;
+  --text-secondary: #8b95a5;
+  --text-dim: #5b6474;
+
+  --blue: #4c8dff;
+  --blue-dim: #2c5aa8;
+  --blue-soft: rgba(76,141,255,0.12);
+
+  --steel: #5b6b7d;
+  --steel-soft: rgba(91,107,125,0.16);
+
+  --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --max-w: 1120px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; overflow-x: hidden; }
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.wrap {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+a { color: inherit; }
+
+/* ============================================================
+   Grid-paper texture (used behind diagrams / scope panel only)
+   ============================================================ */
+.grid-texture {
+  background-image:
+    linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(18,22,28,0.88);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.mark {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--blue);
+}
+
+.site-nav { display: flex; gap: 28px; }
+
+.site-nav a {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  transition: color 0.15s ease;
+}
+
+.site-nav a:hover { color: var(--text-primary); }
+
+/* ============================================================
+   Hero
+   ============================================================ */
+.hero {
+  padding: 88px 0 80px;
+  border-bottom: 1px solid var(--line);
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: center;
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--blue);
+  margin-bottom: 18px;
+}
+
+.hero-text h1 {
+  font-size: 44px;
+  font-weight: 650;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin-bottom: 22px;
+}
+
+.hero-lead {
+  font-size: 17px;
+  color: var(--text-secondary);
+  max-width: 46ch;
+}
+
+.scope-panel {
+  position: relative;
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+  height: 280px;
+}
+
+.scope-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+#hero-canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.scope-readout {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--font-mono);
+}
+
+.readout-label {
+  font-size: 11px;
+  color: var(--blue);
+  border: 1px solid var(--blue-dim);
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+
+.readout-value {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ============================================================
+   Sections
+   ============================================================ */
+.section { padding: 76px 0; border-bottom: 1px solid var(--line); }
+.section-alt { background: var(--bg-panel-alt); }
+
+.section-grid {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 56px;
+}
+
+.section-head { align-self: start; }
+
+.section-num {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--blue);
+  margin-bottom: 10px;
+}
+
+.section-head h2 {
+  font-size: 26px;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.section-sub {
+  margin-top: 12px;
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+.section-body p {
+  color: var(--text-secondary);
+  font-size: 16px;
+  max-width: 62ch;
+  margin-bottom: 16px;
+}
+
+/* ============================================================
+   Block diagrams (SVG)
+   ============================================================ */
+.diagram-frame {
+  margin-top: 28px;
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 20px;
+  min-width: 0;
+}
+
+.block-diagram { width: 100%; height: auto; display: block; min-width: 0; }
+
+.signal-line { stroke: var(--steel); stroke-width: 1.5; }
+.arrow-path { stroke: var(--steel); stroke-width: 1.5; }
+
+.diagram-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  fill: var(--text-dim);
+}
+
+.block-rect {
+  fill: var(--bg-panel-alt);
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.block-rect-accent {
+  stroke: var(--blue-dim);
+}
+
+.block-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  fill: var(--text-secondary);
+}
+
+/* ============================================================
+   Loop toggle (§02)
+   ============================================================ */
+.loop-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.loop-btn {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 9px 18px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.loop-btn.is-active {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+.loop-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+}
+
+.loop-graph-frame {
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 16px;
+  height: 220px;
+  overflow: hidden;
+}
+
+.loop-stage .diagram-frame { margin-top: 0; height: 220px; display: flex; align-items: center; }
+
+#loop-canvas { width: 100%; height: 100%; display: block; }
+#tau-canvas { width: 100%; height: 100%; display: block; }
+
+.loop-caption {
+  margin-top: 20px;
+  font-size: 15px;
+  color: var(--text-secondary);
+  border-left: 2px solid var(--blue-dim);
+  padding-left: 14px;
+}
+
+/* ============================================================
+   Laplace (§03)
+   ============================================================ */
+.laplace-body { display: block; }
+
+.formula-stack {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 36px;
+}
+
+.formula-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formula-name {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.formula-expr {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--blue);
+}
+
+.tau-demo {
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 24px;
+}
+
+.tau-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.tau-controls label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+#tau-slider {
+  flex: 1 1 160px;
+  min-width: 0;
+  width: 100%;
+  accent-color: var(--blue);
+}
+
+.tau-value {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--blue);
+  min-width: 70px;
+}
+
+.tau-demo .loop-graph-frame { padding: 12px; }
+
+.tau-note {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+/* ============================================================
+   Applications grid (§04)
+   ============================================================ */
+.app-grid {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.app-item {
+  background: var(--bg);
+  padding: 24px;
+}
+
+.app-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--blue);
+  margin-bottom: 8px;
+}
+
+.app-item p {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.site-footer {
+  padding: 32px 0;
+}
+
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 860px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .section-grid { grid-template-columns: 1fr; gap: 24px; }
+  .loop-stage { grid-template-columns: 1fr; }
+  .formula-stack { grid-template-columns: 1fr; }
+  .app-grid { grid-template-columns: 1fr; }
+  .hero-text h1 { font-size: 32px; }
+}

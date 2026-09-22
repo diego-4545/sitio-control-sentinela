@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automatización y Control de Sistemas Dinámicos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;650;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <span class="mark">SISTEMAS.CTRL</span>
+    <nav class="site-nav">
+      <a href="#concepto">§01 Concepto</a>
+      <a href="#lazos">§02 Lazos</a>
+      <a href="#laplace">§03 Laplace</a>
+      <a href="#aplicaciones">§04 Aplicaciones</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-text">
+        <p class="kicker">Teoría de control · sistemas de tiempo continuo y discreto</p>
+        <h1>Automatización y Control<br>de Sistemas Dinámicos</h1>
+        <p class="hero-lead">
+          Todo sistema que se regula a sí mismo —desde un termostato hasta un dron en vuelo—
+          comparte la misma estructura: medir, decidir, actuar. Esta es la disciplina que
+          formaliza esa estructura en matemáticas.
+        </p>
+      </div>
+      <div class="scope-panel" aria-hidden="true">
+        <canvas id="hero-canvas"></canvas>
+        <div class="scope-readout">
+          <span class="readout-label">CH1</span>
+          <span class="readout-value" id="readout-value">y(t) = 1 − e^(−t/τ)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="concepto" class="section">
+    <div class="wrap section-grid">
+      <div class="section-head">
+        <span class="section-num">§01</span>
+        <h2>¿Qué es un sistema de control?</h2>
+      </div>
+      <div class="section-body">
+        <p>
+          Un sistema de control observa el estado real de un proceso, lo compara contra un
+          valor deseado, y actúa sobre el proceso para reducir la diferencia entre ambos.
+          Un termostato mide la temperatura, la compara contra la que fijaste, y enciende
+          o apaga la calefacción según haga falta.
+        </p>
+        <p>
+          Esa estructura de tres pasos —medir, comparar, actuar— se repite en dominios que
+          a simple vista no tienen nada en común: la suspensión activa de un automóvil,
+          el piloto automático de un avión, o el brazo de un robot industrial soldando
+          una carrocería con precisión de milímetros.
+        </p>
+        <div class="diagram-frame">
+          <svg viewBox="0 0 640 140" class="block-diagram" role="img" aria-label="Diagrama de bloques: entrada, proceso, salida">
+            <line x1="0" y1="70" x2="60" y2="70" class="signal-line"/>
+            <text x="4" y="58" class="diagram-label">entrada</text>
+            <rect x="60" y="40" width="160" height="60" class="block-rect"/>
+            <text x="140" y="65" class="block-label" text-anchor="middle">medir /</text>
+            <text x="140" y="83" class="block-label" text-anchor="middle">comparar</text>
+            <line x1="220" y1="70" x2="280" y2="70" class="signal-line"/>
+            <rect x="280" y="40" width="160" height="60" class="block-rect block-rect-accent"/>
+            <text x="360" y="65" class="block-label" text-anchor="middle">proceso</text>
+            <text x="360" y="83" class="block-label" text-anchor="middle">físico</text>
+            <line x1="440" y1="70" x2="580" y2="70" class="signal-line" marker-end="url(#arrow)"/>
+            <text x="586" y="58" class="diagram-label">salida</text>
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M1 1L9 5L1 9" fill="none" class="arrow-path"/>
+              </marker>
+            </defs>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="lazos" class="section section-alt">
+    <div class="wrap section-grid">
+      <div class="section-head">
+        <span class="section-num">§02</span>
+        <h2>Lazo abierto vs. lazo cerrado</h2>
+        <p class="section-sub">
+          La diferencia entre ambos no es de complejidad — es de si el sistema se entera
+          de sus propios errores.
+        </p>
+      </div>
+      <div class="section-body">
+        <div class="loop-toggle" role="tablist">
+          <button class="loop-btn is-active" data-loop="abierto" role="tab" aria-selected="true">Lazo abierto</button>
+          <button class="loop-btn" data-loop="cerrado" role="tab" aria-selected="false">Lazo cerrado</button>
+        </div>
+
+        <div class="loop-stage">
+          <div class="diagram-frame">
+            <svg viewBox="0 0 640 160" class="block-diagram" id="loop-diagram" role="img" aria-label="Diagrama del lazo seleccionado"></svg>
+          </div>
+          <div class="loop-graph-frame">
+            <canvas id="loop-canvas"></canvas>
+          </div>
+        </div>
+
+        <p class="loop-caption" id="loop-caption">
+          Sin retroalimentación, una perturbación desvía la salida y el sistema nunca
+          se entera — el error permanece indefinidamente.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="laplace" class="section">
+    <div class="wrap section-grid">
+      <div class="section-head">
+        <span class="section-num">§03</span>
+        <h2>La Transformada de Laplace</h2>
+        <p class="section-sub">
+          Convierte ecuaciones diferenciales en álgebra. Es la herramienta que permite
+          predecir cómo responde un sistema sin resolver su dinámica paso a paso.
+        </p>
+      </div>
+      <div class="section-body laplace-body">
+        <div class="formula-stack">
+          <div class="formula-card">
+            <span class="formula-name">Escalón unitario</span>
+            <span class="formula-expr">L{u(t)} = 1 / s</span>
+          </div>
+          <div class="formula-card">
+            <span class="formula-name">Impulso unitario</span>
+            <span class="formula-expr">L{δ(t)} = 1</span>
+          </div>
+          <div class="formula-card">
+            <span class="formula-name">Sistema de primer orden</span>
+            <span class="formula-expr">Y(s) = 1 / (s(τs + 1))</span>
+          </div>
+        </div>
+
+        <div class="tau-demo">
+          <div class="tau-controls">
+            <label for="tau-slider">Constante de tiempo τ</label>
+            <input type="range" id="tau-slider" min="3" max="20" value="8" step="1">
+            <span class="tau-value" id="tau-value">τ = 0.8 s</span>
+          </div>
+          <div class="loop-graph-frame">
+            <canvas id="tau-canvas"></canvas>
+          </div>
+          <p class="tau-note">
+            Un τ pequeño responde rápido; uno grande responde lento pero suave.
+            Ambos llegan al mismo destino — solo cambia el camino.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="aplicaciones" class="section section-alt">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-num">§04</span>
+        <h2>Dónde vive esta disciplina</h2>
+      </div>
+      <div class="app-grid">
+        <div class="app-item">
+          <span class="app-label">Vuelo autónomo</span>
+          <p>Drones y pilotos automáticos corrigen su trayectoria decenas de veces por segundo.</p>
+        </div>
+        <div class="app-item">
+          <span class="app-label">Robótica industrial</span>
+          <p>Brazos robóticos mantienen precisión submilimétrica pese a variaciones de carga.</p>
+        </div>
+        <div class="app-item">
+          <span class="app-label">Climatización</span>
+          <p>Termostatos y sistemas HVAC regulan temperatura con retroalimentación continua.</p>
+        </div>
+        <div class="app-item">
+          <span class="app-label">Suspensión activa</span>
+          <p>Amortiguadores ajustan su rigidez en tiempo real según el estado del camino.</p>
+        </div>
+        <div class="app-item">
+          <span class="app-label">Redes eléctricas</span>
+          <p>Reguladores mantienen voltaje y frecuencia estables ante demanda variable.</p>
+        </div>
+        <div class="app-item">
+          <span class="app-label">Monitoreo de software</span>
+          <p>Sistemas de supervisión muestrean el estado de un servicio y generan alarmas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Automatización y Control de Sistemas Dinámicos</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
